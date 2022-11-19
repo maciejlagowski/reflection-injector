@@ -17,8 +17,9 @@ public class ReflectionInjector {
     private Set<Object> controllers;
 
     public Set<Object> scanAndConstruct() throws Exception {
-        Set<Class<?>> controllers = new Reflections().getTypesAnnotatedWith(Controller.class);
-        Set<Class<?>> instances = new Reflections().getTypesAnnotatedWith(Instance.class);
+        Reflections reflections = new Reflections();
+        Set<Class<?>> controllers = reflections.getTypesAnnotatedWith(Controller.class);
+        Set<Class<?>> instances = reflections.getTypesAnnotatedWith(Instance.class);
         this.instances = constructObjects(instances);
         this.controllers = constructObjects(controllers);
         return this.controllers;
@@ -55,9 +56,6 @@ public class ReflectionInjector {
         }
         if (objParams.size() < parameters.length) {
             throw new Exception("Cannot find all required instances");
-        }
-        if (objParams.size() == 0) {
-            return ctor.newInstance();
         }
         return ctor.newInstance(objParams.toArray());
     }
